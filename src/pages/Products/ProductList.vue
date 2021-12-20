@@ -39,7 +39,6 @@ export default {
           name: "createdAt",
           label: "Created At",
           field: "createdAt",
-          format: (val, row) => `${val.toISOString()}`
         },
         {
           name: "actions",

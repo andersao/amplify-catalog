@@ -12,7 +12,9 @@
   "dependencies": {
     "@aws-amplify/core": "^4.3.11",
     "@aws-amplify/datastore": "^3.7.3",
+    "@aws-amplify/ui-components": "^1.9.6",
     "@quasar/extras": "^1.0.0",
+    "aws-amplify": "^4.3.11",
     "core-js": "^3.6.5",
     "quasar": "^1.0.0"
   },

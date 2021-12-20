@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { DataStore, Predicates } from "@aws-amplify/datastore";
+import { Product } from "../../models";
 import ProductList from "./ProductList";
 import ProductDrawer from "./ProductDrawer";
 
@@ -33,17 +35,15 @@ export default {
     return {
       selected: null,
       openForm: false,
-      data: [
-        {
-          id: 1,
-          name: "Sample",
-          price: 9.99,
-          createdAt: new Date()
-        }
-      ]
+      data: []
     };
   },
   methods: {
+    async fetch() {
+      const products = await DataStore.query(Product, Predicates.ALL);
+      console.log(products);
+      this.data = products;
+    },
     openEditForm(item) {
       this.selected = item;
       this.openForm = true;
@@ -56,19 +56,21 @@ export default {
       this.selected = null;
       this.openForm = false;
     },
-    onSave(item) {
+    async onSave(item) {
       const handler = item.id ? this.doUpdate : this.doCreate;
-      handler(item);
+      await handler(item);
       this.selected = null;
     },
-    doCreate(item) {
-      this.data.push({
-        ...item,
-        createdAt: new Date(),
-        id: uid()
-      });
+    async doCreate(item) {
+      const { name, price } = item;
+      await DataStore.save(
+        new Product({
+          name,
+          price: Number(price)
+        })
+      );
     },
-    doUpdate(item) {
+    async doUpdate(item) {
       const index = this.data.findIndex(({ id }) => id === item.id);
       this.data.splice(index, 1, { ...this.data[index], ...item });
     },
@@ -76,6 +78,9 @@ export default {
       this.selected = null;
       this.data = this.data.filter(({ id }) => id !== item.id);
     }
+  },
+  async mounted() {
+    await this.fetch();
   }
 };
 </script>
