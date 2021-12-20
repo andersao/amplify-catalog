@@ -16,15 +16,6 @@ import { Product } from "../../models";
 import ProductList from "./ProductList";
 import ProductDrawer from "./ProductDrawer";
 
-const uid = function() {
-  return (
-    Date.now().toString(36) +
-    Math.random()
-      .toString(36)
-      .substr(2)
-  );
-};
-
 export default {
   name: "ProductIndex",
   components: {
@@ -41,7 +32,6 @@ export default {
   methods: {
     async fetch() {
       const products = await DataStore.query(Product, Predicates.ALL);
-      console.log(products);
       this.data = products;
     },
     openEditForm(item) {
@@ -69,14 +59,22 @@ export default {
           price: Number(price)
         })
       );
+      await this.fetch();
     },
     async doUpdate(item) {
-      const index = this.data.findIndex(({ id }) => id === item.id);
-      this.data.splice(index, 1, { ...this.data[index], ...item });
+      const original = await DataStore.query(Product, item.id);
+      await DataStore.save(
+        Product.copyOf(original, updated => {
+          updated.name = item.name;
+          updated.price = Number(item.price);
+        })
+      );
+      await this.fetch();
     },
-    doDelete(item) {
-      this.selected = null;
-      this.data = this.data.filter(({ id }) => id !== item.id);
+    async doDelete(item) {
+      const product = await DataStore.query(Product, item.id);
+      await DataStore.delete(product);
+      await this.fetch();
     }
   },
   async mounted() {
