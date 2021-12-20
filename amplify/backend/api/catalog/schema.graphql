@@ -2,4 +2,6 @@ type Product @model @auth(rules: [{allow: owner}]) {
   id: ID!
   name: String!
   price: Float!
+  owner: String
 }
+ 

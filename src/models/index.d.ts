@@ -12,6 +12,7 @@ export declare class Product {
   readonly id: string;
   readonly name: string;
   readonly price: number;
+  readonly owner?: string;
   readonly createdAt?: string;
   readonly updatedAt?: string;
   constructor(init: ModelInit<Product, ProductMetaData>);
