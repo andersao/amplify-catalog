@@ -8,6 +8,7 @@ frontend:
   phases:
     preBuild:
       commands:
+        - amplifyPull --simple
         - yarn install
     build:
       commands:
