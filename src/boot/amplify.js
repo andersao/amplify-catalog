@@ -4,7 +4,7 @@ import {
   applyPolyfills,
   defineCustomElements,
 } from "@aws-amplify/ui-components/loader";
-import { Auth, Hub } from "aws-amplify";
+import { Auth, Hub, DataStore } from "aws-amplify";
 
 export default async ({ app, router, store, Vue }) => {
   Vue.prototype.$user = null;
@@ -29,6 +29,7 @@ export default async ({ app, router, store, Vue }) => {
         break;
       case "signOut":
         Vue.prototype.$user = null;
+        await DataStore.clear();
         await router.push({ name: "login" });
         break;
     }

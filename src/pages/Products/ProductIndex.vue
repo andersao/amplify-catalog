@@ -2,7 +2,13 @@
   <div>
     <ProductDrawer v-model="openForm" :selected="selected" @save="onSave" @close="onCloseForm" />
     <q-page padding>
-      <ProductList :data="data" @onEdit="openEditForm" @onDelete="doDelete" />
+      <ProductList
+        :loading="loading"
+        :data="data"
+        @onEdit="openEditForm"
+        @onDelete="doDelete"
+        @refresh="onRefresh"
+      />
       <q-page-sticky position="bottom-right" :offset="[18, 18]">
         <q-btn @click="openCreateForm" fab icon="add" color="accent" />
       </q-page-sticky>
@@ -24,6 +30,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       selected: null,
       openForm: false,
       data: []
@@ -31,8 +38,16 @@ export default {
   },
   methods: {
     async fetch() {
-      const products = await DataStore.query(Product, Predicates.ALL);
-      this.data = products;
+      try {
+        this.loading = true;
+        const products = await DataStore.query(Product, Predicates.ALL);
+        this.data = products;
+      } finally {
+        this.loading = false;
+      }
+    },
+    async onRefresh() {
+      await fetch();
     },
     openEditForm(item) {
       this.selected = item;

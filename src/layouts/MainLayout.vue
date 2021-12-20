@@ -26,6 +26,11 @@
           <q-item-label>Products</q-item-label>
         </q-item-section>
       </q-item>
+      <q-item @click="doLogout" clickable v-ripple>
+        <q-item-section>
+          <q-item-label>Sair</q-item-label>
+        </q-item-section>
+      </q-item>
     </q-drawer>
 
     <q-page-container>
@@ -35,12 +40,19 @@
 </template>
 
 <script>
+import { Auth } from "aws-amplify";
+
 export default {
   name: "MainLayout",
   data() {
     return {
       leftDrawerOpen: false
     };
+  },
+  methods: {
+    async doLogout() {
+      await Auth.signOut();
+    }
   }
 };
 </script>

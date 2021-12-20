@@ -1,6 +1,9 @@
 <template>
   <div>
-    <q-table title="Products" :data="data" :columns="columns" row-key="id">
+    <q-table :loading="loading" title="Products" :data="data" :columns="columns" row-key="id">
+      <template v-slot:top>
+        <q-btn color="primary" :disable="loading" label="Refresh" @click="refresh" />
+      </template>
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
           <q-btn @click="onEdit(props.row)" flat round size="sm" icon="edit"></q-btn>
@@ -15,7 +18,8 @@
 export default {
   name: "ProductList",
   props: {
-    data: Array
+    data: Array,
+    loading: Boolean
   },
   data() {
     return {
@@ -38,7 +42,7 @@ export default {
         {
           name: "createdAt",
           label: "Created At",
-          field: "createdAt",
+          field: "createdAt"
         },
         {
           name: "actions",
@@ -55,6 +59,9 @@ export default {
     },
     onEdit(item) {
       this.$emit("onEdit", item);
+    },
+    refresh() {
+      this.$emit("refresh");
     }
   }
 };
