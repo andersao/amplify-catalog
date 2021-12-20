@@ -181,9 +181,19 @@ module.exports = function (/* ctx */) {
       // More info: https://v1.quasar.dev/quasar-cli/developing-electron-apps/node-integration
       nodeIntegration: true,
 
-      extendWebpack(/* cfg */) {
-        // do something with Electron main process Webpack cfg
-        // chainWebpack also available besides this extendWebpack
+      // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
+      extendWebpack(cfg) {
+        cfg.module.rules.push({
+          enforce: 'pre',
+          test: /\.(.mjs|js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /node_modules/,
+          options: {
+            formatter: require('eslint').CLIEngine.getFormatter('stylish'),
+          },
+        });
+        cfg.resolve.extensions = ['.mjs', ...cfg.resolve.extensions];
+        cfg.resolve.alias['~'] = path.resolve(__dirname, './src');
       },
     },
   };
